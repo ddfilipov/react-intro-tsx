@@ -4,47 +4,48 @@ import './index.css';
 
 interface SquareProps {
   value: string;
-  //onClick : React.MouseEventHandler<HTMLButtonElement>;
   onClick : any;
 }
 
-interface SquareState {
+/* interface SquareState {
   value: String;
-}
+} */
 
 interface BoardProps {
 }
 
 interface BoardState{
   squares : string[];
+  xIsNext: boolean;
 }
 
-class Square extends React.Component<SquareProps, SquareState> {
-
-    render() {
-      return (
-        <button 
-          className="square" 
-          onClick={() => this.props.onClick()}
-        >
-          {this.props.value}
-        </button>
-      );
-    }
-  }
+function Square(props: SquareProps) {
+    return (
+      <button 
+        className="square" 
+        onClick={props.onClick}
+      >
+        {props.value}
+      </button>
+    );
+}
 
 class Board extends React.Component<BoardProps, BoardState> {
   constructor(props : BoardProps){
     super(props);
     this.state = {
       squares : Array(9).fill(null),
+      xIsNext : true,
     }
   }
 
   handleClick(i : number) {
     const squares : string[] = this.state.squares.slice();
-    squares[i] = 'X';
-    this.setState({squares : squares})
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares : squares,
+      xIsNext : !this.state.xIsNext,
+    });
   }
 
   renderSquare(i : number) {
@@ -57,7 +58,7 @@ class Board extends React.Component<BoardProps, BoardState> {
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
       <div>
